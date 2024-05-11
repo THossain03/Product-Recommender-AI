@@ -1,0 +1,51 @@
+ProductID,Name,Category,Price
+1,Product_1,Electronics,1065
+2,Product_2,Books,284
+3,Product_3,Books,1377
+4,Product_4,Home Appliances,501
+5,Product_5,Electronics,306
+6,Product_6,Home Appliances,185
+7,Product_7,Electronics,611
+8,Product_8,Clothing,1127
+9,Product_9,Sports,704
+10,Product_10,Sports,997
+11,Product_11,Sports,1144
+12,Product_12,Home Appliances,195
+13,Product_13,Clothing,257
+14,Product_14,Electronics,985
+15,Product_15,Books,932
+16,Product_16,Electronics,1189
+17,Product_17,Books,1284
+18,Product_18,Electronics,1351
+19,Product_19,Clothing,132
+20,Product_20,Books,22
+21,Product_21,Home Appliances,570
+22,Product_22,Electronics,574
+23,Product_23,Electronics,1351
+24,Product_24,Books,690
+25,Product_25,Home Appliances,630
+26,Product_26,Home Appliances,1316
+27,Product_27,Clothing,858
+28,Product_28,Home Appliances,966
+29,Product_29,Home Appliances,159
+30,Product_30,Home Appliances,494
+31,Product_31,Sports,1414
+32,Product_32,Clothing,789
+33,Product_33,Electronics,1132
+34,Product_34,Books,1421
+35,Product_35,Electronics,250
+36,Product_36,Clothing,1204
+37,Product_37,Books,1067
+38,Product_38,Clothing,763
+39,Product_39,Home Appliances,542
+40,Product_40,Books,925
+41,Product_41,Home Appliances,412
+42,Product_42,Electronics,529
+43,Product_43,Electronics,832
+44,Product_44,Books,907
+45,Product_45,Books,40
+46,Product_46,Clothing,689
+47,Product_47,Clothing,24
+48,Product_48,Home Appliances,325
+49,Product_49,Books,516
+50,Product_50,Electronics,404
