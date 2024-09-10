@@ -1,7 +1,7 @@
-Flask==2.2.2
-pandas==1.3.5
-scikit-learn==1.2.1
-numpy==1.21.6
-gunicorn==20.1.0  # For serving the Flask app in production
+Flask==2.3.3
+pandas==2.1.2
+scikit-learn==1.3.0
+numpy==1.25.0
+gunicorn==21.2.0  # For serving the Flask app in production
 surprise==0.1
-eventlet==0.33.0
+eventlet==0.34.0

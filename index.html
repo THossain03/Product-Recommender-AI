@@ -19,59 +19,93 @@
         .result-container {
             margin-top: 20px;
         }
+        .spinner-border {
+            display: none;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1 class="text-center">Product Recommender System</h1>
-        <form method="POST" action="/recommend" class="mt-4">
+        <form id="recommendation-form" method="POST" action="/recommend" class="mt-4">
             <div class="mb-3">
                 <label for="user_id" class="form-label">Enter Your User ID:</label>
                 <input type="number" class="form-control" id="user_id" name="user_id" required>
+                <div id="user_id_feedback" class="invalid-feedback"></div>
             </div>
             <div class="mb-3">
                 <label for="top_n" class="form-label">Number of Products to Display:</label>
                 <input type="number" class="form-control" id="top_n" name="top_n" value="5" required>
             </div>
+            <div class="mb-3">
+                <label for="location" class="form-label">Enter Your Location:</label>
+                <input type="text" class="form-control" id="location" name="location" required>
+            </div>
             <div class="text-center">
                 <button type="submit" class="btn btn-primary">Get Recommendations</button>
+                <div id="loading-spinner" class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
             </div>
         </form>
-        {% if recommendation %}
-        <div class="result-container">
-            <h2>Recommended Products:</h2>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Product Name</th>
-                        <th scope="col">Price</th>
-                    </tr>
-                </thead>
-                <tbody id="product-list">
-                    {% for product in recommendation %}
-                    <tr>
-                        <th scope="row">{{ loop.index }}</th>
-                        <td>{{ product.name }}</td>
-                        <td>{{ product.price }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        {% endif %}
+        <div id="result-container" class="result-container"></div>
     </div>
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
+            const form = document.getElementById('recommendation-form');
+            const userIdInput = document.getElementById('user_id');
+            const userIdFeedback = document.getElementById('user_id_feedback');
             const topNInput = document.getElementById('top_n');
-            const productList = document.getElementById('product-list');
+            const locationInput = document.getElementById('location');
+            const resultContainer = document.getElementById('result-container');
+            const loadingSpinner = document.getElementById('loading-spinner');
 
-            topNInput.addEventListener('change', function() {
-                const topN = parseInt(this.value, 10);
-                const rows = productList.querySelectorAll('tr');
-                rows.forEach((row, index) => {
-                    row.style.display = index < topN ? '' : 'none';
+            // Real-time validation
+            userIdInput.addEventListener('input', function() {
+                const userId = this.value;
+                fetch(`/validate_user/${userId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (!data.exists) {
+                            userIdInput.classList.add('is-invalid');
+                            userIdFeedback.textContent = 'User ID does not exist.';
+                        } else {
+                            userIdInput.classList.remove('is-invalid');
+                            userIdFeedback.textContent = '';
+                        }
+                    });
+            });
+
+            // Handle form submission with AJAX
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+                const formData = new FormData(form);
+                
+                loadingSpinner.style.display = 'inline-block';
+                resultContainer.innerHTML = '';  // Clear previous results
+
+                fetch(form.action, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    loadingSpinner.style.display = 'none';
+                    if (data.error) {
+                        resultContainer.innerHTML = `<div class="alert alert-danger">${data.error}</div>`;
+                    } else {
+                        let resultHtml = '<h2>Recommended Products:</h2><table class="table"><thead><tr><th scope="col">#</th><th scope="col">Product Name</th><th scope="col">Price</th></tr></thead><tbody>';
+                        data.recommendations.forEach((product, index) => {
+                            resultHtml += `<tr><th scope="row">${index + 1}</th><td>${product.name}</td><td>${product.price}</td></tr>`;
+                        });
+                        resultHtml += '</tbody></table>';
+                        resultContainer.innerHTML = resultHtml;
+                    }
+                })
+                .catch(error => {
+                    loadingSpinner.style.display = 'none';
+                    resultContainer.innerHTML = `<div class="alert alert-danger">An error occurred: ${error.message}</div>`;
                 });
             });
 

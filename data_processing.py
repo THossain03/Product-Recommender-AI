@@ -1,4 +1,8 @@
 import pandas as pd
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
+from sklearn.impute import SimpleImputer
 
 def load_and_preprocess_data():
     user_data = pd.read_csv('user_data.csv')
@@ -13,10 +17,41 @@ def load_and_preprocess_data():
     full_data['Timestamp'] = pd.to_datetime(full_data['Timestamp'])
     full_data['Hour'] = full_data['Timestamp'].dt.hour
 
-    return full_data
+    # Additional Features
+    full_data['Interaction'] = full_data['InteractionType'].astype('category').cat.codes
+    full_data['Product_Category'] = full_data['Category'].astype('category').cat.codes
+
+    # Define features and target
+    features = ['Gender', 'Price', 'Hour', 'Interaction', 'Product_Category']
+    X = full_data[features]
+    y = full_data['Rating']
+
+    return X, y
 
 def get_features_targets(full_data):
-    # Assuming the data includes a 'Rating' column for interactions
-    X = full_data.drop(['Rating'], axis=1)
+    # Define preprocessing pipeline
+    numeric_features = ['Price', 'Hour']
+    categorical_features = ['Gender', 'Interaction', 'Product_Category']
+
+    # Preprocessing for numeric data
+    numeric_transformer = Pipeline(steps=[
+        ('imputer', SimpleImputer(strategy='median')),
+        ('scaler', StandardScaler())])
+
+    # Preprocessing for categorical data
+    categorical_transformer = Pipeline(steps=[
+        ('imputer', SimpleImputer(strategy='constant', fill_value='missing')),
+        ('onehot', OneHotEncoder(handle_unknown='ignore'))])
+
+    preprocessor = ColumnTransformer(
+        transformers=[
+            ('num', numeric_transformer, numeric_features),
+            ('cat', categorical_transformer, categorical_features)])
+
+    # Apply transformations
+    X = preprocessor.fit_transform(full_data)
+
+    # Target variable
     y = full_data['Rating']
+
     return X, y
