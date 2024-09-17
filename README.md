@@ -5,7 +5,7 @@ An advanced product recommender AI.
 To execute locally, make sure to run the following command on a CLI given your OS:
 pip install -r requirements.txt 
 Then execute: 
-py app.py
+python3 app.py 
 You should see:
 * Serving Flask app 'app'
 * Debug mode: off
